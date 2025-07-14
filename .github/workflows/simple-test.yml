@@ -1,0 +1,41 @@
+name: Deploy Django to Ubuntu Server
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Deploy via SSH
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.DEPLOY_HOST }}
+        username: ${{ secrets.DEPLOY_USER }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        script: |
+          echo "✅ Connected to server"
+
+          cd /home/ubuntu/instagram-clone
+          git pull origin master
+
+          echo "📦 Activating virtualenv"
+          source myenv/bin/activate
+
+          echo "📦 Installing dependencies"
+          pip install -r requirements.txt
+
+          echo "⚙️ Running migrations"
+          python manage.py migrate
+
+          echo "🎨 Collecting static files"
+          python manage.py collectstatic --noinput
+
+          echo "🔄 Restarting Gunicorn"
+          sudo systemctl restart gunicorn

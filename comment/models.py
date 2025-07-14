@@ -13,7 +13,7 @@ class Comment(models.Model):
     date = models.DateTimeField(auto_now_add=True, null=True)
 
     # def __str__(self):
-    #     return self.post
+    #     return self.post  never give up
     
     def user_comment_post(sender, instance, *args, **kwargs):
         comment = instance
