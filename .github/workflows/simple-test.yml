@@ -28,6 +28,9 @@ jobs:
           echo "📦 Activating virtualenv"
           source myenv/bin/activate
 
+          echo "✅ Upgrading pip and setuptools"
+          pip install --upgrade pip setuptools wheel
+
           echo "📦 Installing dependencies"
           pip install -r requirements.txt
 
